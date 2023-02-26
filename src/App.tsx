@@ -1,8 +1,15 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Developers, Home, Levels } from '@/pages'
+
 function App (): JSX.Element {
   return (
-    <div className="App">
-      <h1>TESTE</h1>
-    </div>
+      <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path="/levels" element={<Levels/>} />
+            <Route path="/developers" element={<Developers/>} />
+        </Routes>
+      </BrowserRouter>
   )
 }
 
