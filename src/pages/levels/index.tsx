@@ -1,13 +1,15 @@
-import { AppLoadingProgress, Box, Button, DataGrid, Dialog, Toast, Tooltip, type GridColDef } from '@/components'
+import { AppLoadingProgress, Box, Button, DataGrid, Dialog, LevelFormModal, Toast, Tooltip, type GridColDef } from '@/components'
 import { http } from '@/services'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { IconButton } from '@mui/material'
-interface ILevels {
-  id: number
-  level: string
-  developers: number
+export interface ILevels {
+  id?: number
+  level?: string
+  developers?: number
 }
 
 interface ILevelsResponse {
@@ -20,6 +22,18 @@ export const Levels = (): JSX.Element => {
   const [levels, setLevels] = useState<ILevels[]>([])
   const [dialog, setDialog] = useState<any>({ open: false })
   const [loading, setLoading] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingLevelName, setEditingLevelName] = useState<ILevels>()
+
+  const handleModalClose = (): void => {
+    setIsModalOpen(false)
+    setEditingLevelName(undefined)
+  }
+
+  const handleEditLevel = (id?: number, name?: string): void => {
+    setIsModalOpen(true)
+    if (name) setEditingLevelName({ id, level: name })
+  }
 
   const getLevels = async (): Promise<void> => {
     try {
@@ -46,7 +60,7 @@ export const Levels = (): JSX.Element => {
       id: params?.row?.id,
       open: true,
       title: 'O nível sera removido!',
-      message: 'Tem certeza de que deseja remover o nivel?',
+      message: 'Tem certeza de que deseja remover?',
       handleConfirm,
       handleCancel
     })
@@ -58,7 +72,7 @@ export const Levels = (): JSX.Element => {
       setLevels(prevLevels => prevLevels.filter((level) => level.id !== id))
       Toast({ message: 'Nível removido!', type: 'success' })
     } catch (error: any) {
-      const message = error?.response?.data.error
+      const message = error?.response?.data.error ?? 'Erro, tente novamante!'
       Toast({ message, type: 'error' })
     }
   }
@@ -81,10 +95,19 @@ export const Levels = (): JSX.Element => {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
+              gridTemplateColumns: 'repeat(2, 30px)',
               gap: 0.5
             }}
           >
+            <Tooltip title="Editar" >
+              <IconButton sx={{
+                width: '20px',
+                fontSize: '10px'
+              }}
+                onClick={() => { handleEditLevel(params?.row?.id, params?.row?.name) }}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Remover" >
               <IconButton sx={{
                 width: '20px',
@@ -98,14 +121,14 @@ export const Levels = (): JSX.Element => {
         )
       },
       align: 'right',
-      width: 80
+      width: 100
     }
   ]
 
   const dataGridColumns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', maxWidth: 100, flex: 1 },
-    { field: 'name', headerName: 'Descrição', minWidth: 100, flex: 1 },
-    { field: 'developers', headerName: 'Qtd desenvolvedores', minWidth: 100, flex: 1 },
+    { field: 'id', headerName: 'ID', maxWidth: 70, flex: 1 },
+    { field: 'name', headerName: 'Descrição', minWidth: 70, flex: 1 },
+    { field: 'developers', headerName: 'Qtd desenvolvedores', minWidth: 70, flex: 1 },
     ...dataGridActions
   ]
 
@@ -145,6 +168,16 @@ export const Levels = (): JSX.Element => {
             boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
             borderRadius: '10px'
           }}>
+          <Tooltip title="Adicionar" >
+            <IconButton sx={{
+              width: '25px',
+              fontSize: '15px'
+            }}
+              onClick={() => { handleEditLevel() }}
+            >
+              <AddCircleIcon />
+            </IconButton>
+          </Tooltip>
           <DataGrid
             columns={dataGridColumns}
             rows={levels ?? []}
@@ -164,6 +197,13 @@ export const Levels = (): JSX.Element => {
         </Button>
       </Link>
       <Dialog dialog={dialog} setDialog={setDialog} />
+      <LevelFormModal
+        open={isModalOpen}
+        onClose={handleModalClose}
+        onSave={setLevels}
+        levelName={editingLevelName?.level}
+        levelId={editingLevelName?.id}
+      />
     </ Box>
   )
 }
