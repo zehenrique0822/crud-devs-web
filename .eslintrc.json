@@ -21,6 +21,9 @@
     ],
     "rules": {
       "react/react-in-jsx-scope": "off",
-      "@typescript-eslint/no-floating-promises": "off"
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/strict-boolean-expressions": "off",
+      "multiline-ternary": "off",
+      "@typescript-eslint/restrict-template-expressions": "off"
     }
 }
