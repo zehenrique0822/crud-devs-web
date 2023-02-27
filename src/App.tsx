@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Developers, Home, Levels } from '@/pages'
+import { Toaster } from 'react-hot-toast'
 
 function App (): JSX.Element {
   return (
@@ -9,6 +10,9 @@ function App (): JSX.Element {
             <Route path="/levels" element={<Levels/>} />
             <Route path="/developers" element={<Developers/>} />
         </Routes>
+        <Toaster
+        position="top-right"
+      />
       </BrowserRouter>
   )
 }

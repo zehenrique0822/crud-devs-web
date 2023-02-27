@@ -1,8 +1,9 @@
-import { AppLoadingProgress, Box, Button, DataGrid, type GridColDef } from '@/components'
+import { AppLoadingProgress, Box, Button, DataGrid, Dialog, Toast, Tooltip, type GridColDef } from '@/components'
 import { http } from '@/services'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
+import DeleteIcon from '@mui/icons-material/Delete'
+import { IconButton } from '@mui/material'
 interface ILevels {
   id: number
   level: string
@@ -17,9 +18,10 @@ interface ILevelsResponse {
 
 export const Levels = (): JSX.Element => {
   const [levels, setLevels] = useState<ILevels[]>([])
+  const [dialog, setDialog] = useState<any>({ open: false })
   const [loading, setLoading] = useState(false)
 
-  const getLogsKeyword = async (): Promise<void> => {
+  const getLevels = async (): Promise<void> => {
     try {
       setLoading(true)
       const { data: logs } = await http.get('/levels')
@@ -38,6 +40,36 @@ export const Levels = (): JSX.Element => {
     }
   }
 
+  const handleOpenDialog = (params: any): void => {
+    setDialog({
+      ...dialog,
+      id: params?.row?.id,
+      open: true,
+      title: 'O nível sera removido!',
+      message: 'Tem certeza de que deseja remover o nivel?',
+      handleConfirm,
+      handleCancel
+    })
+  }
+
+  const handleConfirm = async (id: number): Promise<void> => {
+    try {
+      await http.delete(`/levels/${id}`)
+      setLevels(prevLevels => prevLevels.filter((level) => level.id !== id))
+      Toast({ message: 'Nível removido!', type: 'success' })
+    } catch (error: any) {
+      const message = error?.response?.data.error
+      Toast({ message, type: 'error' })
+    }
+  }
+
+  const handleCancel = async (): Promise<void> => {
+    setDialog({
+      ...dialog,
+      open: false
+    })
+  }
+
   const dataGridActions: GridColDef[] = [
     {
       field: 'manager-leves',
@@ -53,17 +85,15 @@ export const Levels = (): JSX.Element => {
               gap: 0.5
             }}
           >
-            <Button
-              sx={{
+            <Tooltip title="Remover" >
+              <IconButton sx={{
                 width: '20px',
                 fontSize: '10px'
               }}
-              variant="contained"
-              size="small"
-              onClick={() => { console.log(params?.row) }}
-            >
-              Remover
-            </Button>
+                onClick={() => { handleOpenDialog(params) }}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
           </Box>
         )
       },
@@ -80,7 +110,7 @@ export const Levels = (): JSX.Element => {
   ]
 
   useEffect(() => {
-    getLogsKeyword()
+    getLevels()
   }, [])
 
   if (loading) return <AppLoadingProgress />
@@ -131,7 +161,9 @@ export const Levels = (): JSX.Element => {
           variant="contained"
         >
           VOLTAR
-        </Button></Link>
+        </Button>
+      </Link>
+      <Dialog dialog={dialog} setDialog={setDialog} />
     </ Box>
   )
 }
