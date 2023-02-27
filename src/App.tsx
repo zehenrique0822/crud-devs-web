@@ -11,7 +11,7 @@ function App (): JSX.Element {
             <Route path="/developers" element={<Developers/>} />
         </Routes>
         <Toaster
-        position="top-right"
+        position="top-center"
       />
       </BrowserRouter>
   )

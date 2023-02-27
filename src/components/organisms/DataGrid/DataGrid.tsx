@@ -34,8 +34,6 @@ export const DataGrid = ({ rows, columns, hideFooter = false, autoHeight = false
       columns={columns}
       autoHeight={autoHeight}
       style={{ border: 0 }}
-      pageSize={10}
-      rowsPerPageOptions={[]}
       hideFooter={hideFooter}
       localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
       isRowSelectable={() => false}

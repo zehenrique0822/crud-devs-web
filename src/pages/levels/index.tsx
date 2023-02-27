@@ -5,14 +5,14 @@ import { Link } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { IconButton } from '@mui/material'
+import { IconButton, Typography } from '@mui/material'
 export interface ILevels {
   id?: number
   level?: string
   developers?: number
 }
 
-interface ILevelsResponse {
+export interface ILevelsResponse {
   id: number
   level: string
   developers: any[]
@@ -25,24 +25,13 @@ export const Levels = (): JSX.Element => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingLevelName, setEditingLevelName] = useState<ILevels>()
 
-  const handleModalClose = (): void => {
-    setIsModalOpen(false)
-    setEditingLevelName(undefined)
-  }
-
-  const handleEditLevel = (id?: number, name?: string): void => {
-    setIsModalOpen(true)
-    if (name) setEditingLevelName({ id, level: name })
-  }
-
   const getLevels = async (): Promise<void> => {
     try {
       setLoading(true)
       const { data: logs } = await http.get('/levels')
       const levelsFormated = logs?.[0]?.map((level: ILevelsResponse) => {
         return {
-          id: level.id,
-          name: level.level,
+          ...level,
           developers: level?.developers?.length
         }
       })
@@ -54,16 +43,14 @@ export const Levels = (): JSX.Element => {
     }
   }
 
-  const handleOpenDialog = (params: any): void => {
-    setDialog({
-      ...dialog,
-      id: params?.row?.id,
-      open: true,
-      title: 'O nível sera removido!',
-      message: 'Tem certeza de que deseja remover?',
-      handleConfirm,
-      handleCancel
-    })
+  const handleModalClose = (): void => {
+    setIsModalOpen(false)
+  }
+
+  const handleEditLevel = (id?: number, level?: string): void => {
+    setIsModalOpen(true)
+    console.log(id, level)
+    if (level) setEditingLevelName({ id, level })
   }
 
   const handleConfirm = async (id: number): Promise<void> => {
@@ -84,6 +71,18 @@ export const Levels = (): JSX.Element => {
     })
   }
 
+  const handleOpenDialog = (params: any): void => {
+    setDialog({
+      ...dialog,
+      id: params?.row?.id,
+      open: true,
+      title: 'O nível será removido!',
+      message: 'Tem certeza de que deseja remover?',
+      handleConfirm,
+      handleCancel
+    })
+  }
+
   const dataGridActions: GridColDef[] = [
     {
       field: 'manager-leves',
@@ -96,7 +95,8 @@ export const Levels = (): JSX.Element => {
             sx={{
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 30px)',
-              gap: 0.5
+              gap: 0.5,
+              justifyContent: 'flex-end'
             }}
           >
             <Tooltip title="Editar" >
@@ -104,7 +104,7 @@ export const Levels = (): JSX.Element => {
                 width: '20px',
                 fontSize: '10px'
               }}
-                onClick={() => { handleEditLevel(params?.row?.id, params?.row?.name) }}>
+                onClick={() => { handleEditLevel(params?.row?.id, params?.row?.level) }}>
                 <EditIcon />
               </IconButton>
             </Tooltip>
@@ -127,7 +127,7 @@ export const Levels = (): JSX.Element => {
 
   const dataGridColumns: GridColDef[] = [
     { field: 'id', headerName: 'ID', maxWidth: 70, flex: 1 },
-    { field: 'name', headerName: 'Descrição', minWidth: 70, flex: 1 },
+    { field: 'level', headerName: 'Descrição', minWidth: 70, flex: 1 },
     { field: 'developers', headerName: 'Qtd desenvolvedores', minWidth: 70, flex: 1 },
     ...dataGridActions
   ]
@@ -150,7 +150,7 @@ export const Levels = (): JSX.Element => {
       }} >
       <Box
         sx={{
-          height: '669px',
+          height: '80%',
           width: '700px',
           '@media (max-width: 768px)': {
             flexDirection: 'column',
@@ -158,26 +158,40 @@ export const Levels = (): JSX.Element => {
           },
           display: 'flex',
           flexDirection: 'column',
-          padding: 0
+          padding: 0,
+          marginBottom: '20px',
+          justifyContent: 'space-between'
         }}
       >
         <Box p={3}
           flex={1}
           sx={{
-            padding: '0 24px',
+            padding: '35px 24px',
             boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
             borderRadius: '10px'
           }}>
-          <Tooltip title="Adicionar" >
-            <IconButton sx={{
-              width: '25px',
-              fontSize: '15px'
-            }}
-              onClick={() => { handleEditLevel() }}
-            >
-              <AddCircleIcon />
-            </IconButton>
-          </Tooltip>
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <Typography variant="h5">Listagem de níveis</Typography>
+            <Tooltip title="Adicionar" >
+              <IconButton sx={{
+                width: '25px',
+                fontSize: '15px'
+              }}
+                onClick={() => {
+                  setEditingLevelName(undefined)
+                  handleEditLevel()
+                }}
+              >
+                <AddCircleIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <div />
           <DataGrid
             columns={dataGridColumns}
             rows={levels ?? []}
@@ -187,7 +201,7 @@ export const Levels = (): JSX.Element => {
       <Link style={{ textDecoration: 'none' }} to="/">
         <Button
           sx={{
-            marginTop: '10px',
+            marginTop: '35px',
             maxWidth: '200px'
           }}
           type="button"

@@ -24,21 +24,33 @@ export const LevelFormModal = ({
   const isUpdate = !!(levelId)
   const initialValues = {
     id: levelId ?? '',
-    name: levelName ?? ''
+    level: levelName ?? ''
+  }
+
+  const handleCreateLevel = async (values: typeof initialValues): Promise<void> => {
+    try {
+      const response = await http.post('/levels', {
+        level: values.level
+      })
+      const updatedLevel: ILevels = response.data
+      onSave(prevLevels => [...prevLevels, { ...updatedLevel, developers: 0 }])
+      Toast({ message: 'Nível criado!', type: 'success' })
+      onClose()
+    } catch (error: any) {
+      const message = error?.response?.data.error ?? 'Erro, tente novamante!'
+      Toast({ message, type: 'error' })
+    }
   }
 
   const handleUpdateLevel = async (values: typeof initialValues): Promise<void> => {
     try {
       const response = await http.put(`/levels/${values.id}`, {
-        level: values.name
+        level: values.level
       })
       const updatedLevel: ILevels = response.data
       const updateLevel = (prevLevels: ILevels[], updatedLevel: ILevels): ILevels[] => {
-        console.log(prevLevels.map((level) =>
-          level.id === updatedLevel.id ? { ...level, name: updatedLevel.level } : level
-        ))
         return prevLevels.map((level) =>
-          level.id === updatedLevel.id ? { ...level, name: updatedLevel.level } : level
+          level.id === updatedLevel.id ? { ...level, level: updatedLevel.level } : level
         )
       }
       onSave(prevLevels => updateLevel(prevLevels, updatedLevel))
@@ -53,11 +65,13 @@ export const LevelFormModal = ({
   const handleSubmit = (values: typeof initialValues): void => {
     if (isUpdate) {
       handleUpdateLevel(values)
+    } else {
+      handleCreateLevel(values)
     }
   }
 
   const validationSchema = Yup.object({
-    name: Yup.string().required('O nome do nível é obrigatório')
+    level: Yup.string().required('O nome do nível é obrigatório')
       .min(3, 'O nível precisa ter no mínimo 3 caracteres.')
       .max(255, 'O nível precisa ter no máximo 255 caracteres.')
   })
@@ -84,20 +98,33 @@ export const LevelFormModal = ({
             {({ errors, touched }) => (
               <Form>
                 <Field
-                  autoFocus
+                  onFocus
                   margin="dense"
                   label="Nome"
                   type="text"
                   fullWidth
-                  name="name"
+                  name="level"
                   as={TextField}
-                  error={touched.name && Boolean(errors.name)}
-                  helperText={touched.name && errors.name}
-                  sx={{ width: '400px' }}
+                  error={touched.level && Boolean(errors.level)}
+                  helperText={touched.level && errors.level}
+                  sx={{
+                    width: '400px',
+                    '@media (max-width: 768px)': {
+                      width: '300px'
+                    }
+                  }}
                 />
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    marginTop: '20px',
+                    width: '100%'
+                  }}
+                >
                 <Button
                   sx={{
-                    // marginTop: '20px'
+                    width: '120px'
                   }}
                   onClick={() => { onClose() }}
                   type="button"
@@ -108,7 +135,7 @@ export const LevelFormModal = ({
                 </Button>
                 <Button
                   sx={{
-                    // marginBottom: '20px', width: '150px'
+                    width: '120px'
                   }}
                   size="medium"
                   variant="contained"
@@ -116,11 +143,12 @@ export const LevelFormModal = ({
                 >
                   Salvar
                 </Button>
+              </Box>
               </Form>
             )}
-          </Formik>
-        </DialogContent>
-      </Box>
-    </Dialog>
+        </Formik>
+      </DialogContent>
+    </Box>
+    </Dialog >
   )
 }
