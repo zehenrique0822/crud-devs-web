@@ -142,7 +142,6 @@ export const DeveloperFormModal = ({
                   }}
                 >
                   <Field
-                    onFocus
                     margin="dense"
                     label="Nome"
                     type="text"

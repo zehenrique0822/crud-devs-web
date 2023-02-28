@@ -98,7 +98,6 @@ export const LevelFormModal = ({
             {({ errors, touched }) => (
               <Form>
                 <Field
-                  onFocus
                   margin="dense"
                   label="Nome"
                   type="text"
