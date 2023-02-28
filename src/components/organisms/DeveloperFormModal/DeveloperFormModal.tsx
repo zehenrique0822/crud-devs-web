@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
 import { Button, Dialog, DialogTitle, DialogContent, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { Box, TextField, Toast } from '@/components'
-import { type ILevelsResponse, type IDeveloper } from '@/pages'
+import { type ILevelsData, type IDeveloper } from '@/pages'
 import { http } from '@/services'
 import moment from 'moment'
 
@@ -11,7 +11,7 @@ interface DeveloperFormModalProps {
   open: boolean
   onClose: () => void
   onSave: Dispatch<SetStateAction<IDeveloper[]>>
-  levels: ILevelsResponse[]
+  levels: ILevelsData[]
   developer?: IDeveloper
 }
 
@@ -24,7 +24,7 @@ export const DeveloperFormModal = ({
 }: DeveloperFormModalProps): JSX.Element => {
   const isUpdate = !!(developer?.id)
 
-  const levelsOptions = levels?.map((level: ILevelsResponse) => {
+  const levelsOptions = levels?.map((level: ILevelsData) => {
     return {
       value: level.id,
       label: level.level
@@ -105,9 +105,12 @@ export const DeveloperFormModal = ({
       .min(3, 'O nome deve ter pelo menos 3 caracteres')
       .max(255, 'O nome deve ter no máximo 255 caracteres'),
     gender: Yup.string().required('O sexo é obrigatório'),
-    date_birth: Yup.date().nullable(),
-    age: Yup.number().positive('A idade deve ser um número positivo').nullable(),
+    date_birth: Yup.date().required('A data de nascimento é obrigatória'),
+    age: Yup.number().positive('A idade deve ser um número positivo')
+      .integer('A idade deve ser um número inteiro')
+      .required('A idade é obrigatória'),
     hobby: Yup.string().max(255, 'O hobby deve ter no máximo 255 caracteres')
+      .required('O hobby é obrigatório')
   })
 
   return (
