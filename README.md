@@ -1,6 +1,6 @@
 # SPA para cadastro de desenvolvedores
  
- `O projeto consiste em uma spa para cadastrado de niveis de desenvolvedores e desenvolvedores.`
+ `O projeto consiste em uma spa para cadastro de niveis de desenvolvedores e desenvolvedores.`
  
  ## 🚀 Começando
  Essas instruções permitirão que você obtenha uma cópia do projeto em operação na sua máquina local para fins de desenvolvimento e teste.
