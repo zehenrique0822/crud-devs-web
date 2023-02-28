@@ -22,6 +22,6 @@
 
 #### 3 - Execute o comando `docker run -p 3001:3001 crud-devs-web`
 
-#### 3 - Após iniciar a SPA utilizará a porta `3001`
+#### 3 - Após iniciar a SPA utilizará a porta `3001` para acessar -> http://localhost:3001
 
 #### Desenvolvido por José Henrique. 
