@@ -48,7 +48,7 @@ export const DeveloperFormModal = ({
 
   const handleCreateDeveloper = async (values: typeof initialValues): Promise<void> => {
     try {
-      const response = await http.post('/developers', {
+      const response = await http.post('/developers/new', {
         id_level: values.id_level,
         name: values.name,
         gender: values.gender,
@@ -68,7 +68,7 @@ export const DeveloperFormModal = ({
 
   const handleUpdateDeveloper = async (values: typeof initialValues): Promise<void> => {
     try {
-      const response = await http.put(`/developers/${values.id}`, {
+      const response = await http.put(`/developers/edit/${values.id}`, {
         id_level: values.id_level,
         name: values.name,
         gender: values.gender,

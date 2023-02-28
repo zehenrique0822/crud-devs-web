@@ -56,7 +56,7 @@ export const Levels = (): JSX.Element => {
 
   const handleConfirm = async (id: number): Promise<void> => {
     try {
-      await http.delete(`/levels/${id}`)
+      await http.delete(`/levels/delete/${id}`)
       setLevels(prevLevels => prevLevels.filter((level) => level.id !== id))
       Toast({ message: 'Nível removido!', type: 'success' })
     } catch (error: any) {

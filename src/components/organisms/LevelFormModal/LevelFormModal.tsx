@@ -29,7 +29,7 @@ export const LevelFormModal = ({
 
   const handleCreateLevel = async (values: typeof initialValues): Promise<void> => {
     try {
-      const response = await http.post('/levels', {
+      const response = await http.post('/levels/new', {
         level: values.level
       })
       const updatedLevel: ILevels = response.data
@@ -44,7 +44,7 @@ export const LevelFormModal = ({
 
   const handleUpdateLevel = async (values: typeof initialValues): Promise<void> => {
     try {
-      const response = await http.put(`/levels/${values.id}`, {
+      const response = await http.put(`/levels/edit/${values.id}`, {
         level: values.level
       })
       const updatedLevel: ILevels = response.data

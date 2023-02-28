@@ -68,7 +68,7 @@ export const Developers = (): JSX.Element => {
 
   const handleConfirm = async (id: number): Promise<void> => {
     try {
-      await http.delete(`/developers/${id}`)
+      await http.delete(`/developers/delete/${id}`)
       setDevelopers(prevDevelopers => prevDevelopers.filter((developer) => developer.id !== id))
       Toast({ message: 'Desenvolvedor removido!', type: 'success' })
     } catch (error: any) {
