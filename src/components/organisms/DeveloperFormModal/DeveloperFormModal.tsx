@@ -125,7 +125,7 @@ export const DeveloperFormModal = ({
           width: '100%'
         }}
       >
-        <DialogTitle>Editar Desenvolvedor</DialogTitle>
+        <DialogTitle>{isUpdate ? 'Editar Desenvolvedor' : 'Adicionar Desenvolvedor'}</DialogTitle>
         <DialogContent>
           <Formik
             initialValues={initialValues}
