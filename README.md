@@ -18,7 +18,7 @@
  
 #### 1 - É necessário clonar o repositório com o comando `git clone https://github.com/zehenrique0822/crud-devs-web.git`
 
-#### 2 - Execute o comando `docker build -t crud-devs-web`
+#### 2 - Execute o comando `docker build -t crud-devs-web .`
 
 #### 3 - Execute o comando `docker run -p 3001:3001 crud-devs-web`
 
