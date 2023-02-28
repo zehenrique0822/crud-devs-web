@@ -7,7 +7,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { IconButton, Typography } from '@mui/material'
 import moment from 'moment'
-import { type ILevelsResponse } from '../levels'
+import { type ILevelsData } from '../levels'
 
 export interface IDeveloper {
   id?: number
@@ -20,7 +20,7 @@ export interface IDeveloper {
 }
 
 export const Developers = (): JSX.Element => {
-  const [levels, setLevels] = useState<ILevelsResponse[]>([])
+  const [levels, setLevels] = useState<ILevelsData[]>([])
   const [developers, setDevelopers] = useState<IDeveloper[]>([])
   const [dialog, setDialog] = useState<any>({ open: false })
   const [loading, setLoading] = useState(false)
@@ -30,8 +30,8 @@ export const Developers = (): JSX.Element => {
   const getLevels = async (): Promise<void> => {
     try {
       setLoading(true)
-      const { data: logs } = await http.get('/levels')
-      const levelsFormated = logs?.[0]?.map((level: ILevelsResponse) => {
+      const { data: response } = await http.get('/levels')
+      const levelsFormated = response.data?.map((level: ILevelsData) => {
         return {
           ...level,
           developers: level?.developers?.length
@@ -48,8 +48,8 @@ export const Developers = (): JSX.Element => {
   const getDevelopers = async (): Promise<void> => {
     try {
       setLoading(true)
-      const { data: devs } = await http.get('/developers')
-      setDevelopers(devs?.[0])
+      const { data: response } = await http.get('/developers')
+      setDevelopers(response.data)
     } catch (error) {
       console.log(error)
     } finally {

@@ -6,16 +6,17 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { IconButton, Typography } from '@mui/material'
+import { type IDeveloper } from '../developers'
 export interface ILevels {
   id?: number
   level?: string
   developers?: number
 }
 
-export interface ILevelsResponse {
+export interface ILevelsData {
   id: number
   level: string
-  developers: any[]
+  developers: IDeveloper[]
 };
 
 export const Levels = (): JSX.Element => {
@@ -28,8 +29,8 @@ export const Levels = (): JSX.Element => {
   const getLevels = async (): Promise<void> => {
     try {
       setLoading(true)
-      const { data: logs } = await http.get('/levels')
-      const levelsFormated = logs?.[0]?.map((level: ILevelsResponse) => {
+      const { data: response } = await http.get('/levels')
+      const levelsFormated = response.data?.map((level: ILevelsData) => {
         return {
           ...level,
           developers: level?.developers?.length
